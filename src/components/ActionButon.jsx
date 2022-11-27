@@ -6,15 +6,23 @@ const Wrapper = styled.div`
 `;
 
 const RectangleButton = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
   border: 1px solid black;
   width: 200px;
-  height: 65px;
+  min-height: 65px;
   cursor: pointer;
   text-align: left;
   margin-bottom: 10px;
   padding: 10px;
   font-weight: bold;
   text-transform: uppercase;
+
+  :hover {
+    background-color: #f1e3ce;
+  }
 `;
 
 const InputParam = styled.label`
@@ -28,9 +36,29 @@ const ToolTip = styled.div`
   font-style: italic;
 `;
 
+const ShortcutsBlock = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  bottom: 5px;
+`;
+
 const Shortcut = styled.div`
-  display: inline-block;
-  margin: 5px 0;
+  display: inline;
+  border: 1px solid black;
+  min-width: 20px;
+  height: 10px;
+  line-height: 10px;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
+  margin: 5px 2px;
+  font-weight: bold;
+  text-transform: uppercase;
+
+  :hover {
+    background-color: #ffce85;
+  }
 `;
 
 const ActionButton = ({ label, url, params, shortcuts }) => {
@@ -50,9 +78,7 @@ const ActionButton = ({ label, url, params, shortcuts }) => {
       }
       console.log(`Calling: ${finalUrl}`);
       await fetch(finalUrl);
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
     setDisabled(false);
   }, [url, values]);
 
@@ -66,11 +92,21 @@ const ActionButton = ({ label, url, params, shortcuts }) => {
     [setValues, values]
   );
 
+  const onShortCutClick = useCallback((values) => () => setValues(values));
+
   return (
     <Wrapper>
       <RectangleButton disabled={disabled} onClick={onButtonClick}>
         {label}
-        {shortcuts ? shortcuts.map() : null}
+        {shortcuts ? (
+          <ShortcutsBlock>
+            {shortcuts.map((s, idx) => (
+              <Shortcut key={`sc-${idx}`} onClick={onShortCutClick(s.values)}>
+                {s.label}
+              </Shortcut>
+            ))}
+          </ShortcutsBlock>
+        ) : null}
       </RectangleButton>
       {params?.map((p, idx) => (
         <React.Fragment key={`param-${idx}`}>
