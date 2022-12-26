@@ -61,7 +61,7 @@ const Shortcut = styled.div`
   }
 `;
 
-const ActionButton = ({ label, url, params, shortcuts }) => {
+const ActionButton = ({ className, label, url, params, shortcuts }) => {
   const [disabled, setDisabled] = useState(false);
   const [values, setValues] = useState(
     params?.map((p) => p.defaultValue) || null
@@ -92,11 +92,11 @@ const ActionButton = ({ label, url, params, shortcuts }) => {
     [setValues, values]
   );
 
-  const onShortCutClick = useCallback((values) => () => setValues(values));
+  const onShortCutClick = useCallback((values) => (e) => {e.preventDefault(); e.stopPropagation(); setValues(values)});
 
   return (
-    <Wrapper>
-      <RectangleButton disabled={disabled} onClick={onButtonClick}>
+    <Wrapper >
+      <RectangleButton className={className} disabled={disabled} onClick={onButtonClick}>
         {label}
         {shortcuts ? (
           <ShortcutsBlock>
